@@ -1,0 +1,2521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodLoop — Free Surplus Food Redistribution Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0f14;
+      --bg-card: rgba(18, 26, 36, 0.75);
+      --bg-card-hover: rgba(26, 38, 52, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(16, 185, 129, 0.3);
+      --emerald-primary: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --emerald-dark: #064e3b;
+      --amber-urgent: #f59e0b;
+      --rose-danger: #f43f5e;
+      --cyan-accent: #06b6d4;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 10% 20%, #0d1b2a 0%, #080d12 60%, #04070a 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background glows */
+    .ambient-glow-1 {
+      position: fixed;
+      top: -150px;
+      left: 10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow-2 {
+      position: fixed;
+      bottom: -150px;
+      right: 5%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.09) 0%, transparent 70%);
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header & Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(10, 15, 20, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-container {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px var(--emerald-glow);
+    }
+
+    .logo-text h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #ffffff 40%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+
+    .logo-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 5px;
+      border-radius: 100px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .nav-link {
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      background: none;
+    }
+
+    .nav-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      color: #fff;
+      background: var(--emerald-primary);
+      box-shadow: 0 4px 15px var(--emerald-glow);
+    }
+
+    .user-persona-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .persona-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 100px;
+      font-size: 13px;
+    }
+
+    .persona-select {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .persona-select option {
+      background: #111827;
+      color: #fff;
+    }
+
+    .hero-banner {
+      max-width: 1380px;
+      margin: 28px auto 16px;
+      padding: 0 24px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(6, 182, 212, 0.08) 50%, rgba(15, 23, 42, 0.6) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 24px;
+      padding: 36px 42px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .hero-content h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .hero-content h2 span {
+      background: linear-gradient(90deg, #10b981, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-content p {
+      color: var(--text-muted);
+      font-size: 15.5px;
+      max-width: 650px;
+      margin-bottom: 20px;
+    }
+
+    .stats-strip {
+      display: flex;
+      gap: 28px;
+    }
+
+    .stat-pill {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-pill .value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-pill .label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 260px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      font-weight: 700;
+      padding: 14px 24px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 14.5px;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(16, 185, 129, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Tab Panels */
+    .tab-section {
+      display: none;
+      animation: fadeIn 0.25s ease forwards;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Filters Bar */
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .category-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-chip {
+      padding: 7px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .filter-chip:hover, .filter-chip.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--emerald-primary);
+      color: #fff;
+    }
+
+    .search-input-box {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 8px 16px;
+      gap: 10px;
+      width: 320px;
+    }
+
+    .search-input-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 13.5px;
+      width: 100%;
+    }
+
+    /* Food Grid */
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px;
+    }
+
+    .food-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .food-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(16, 185, 129, 0.1);
+    }
+
+    .food-card-img-wrap {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      background: #1e293b;
+    }
+
+    .food-card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .food-card:hover .food-card-img-wrap img {
+      transform: scale(1.05);
+    }
+
+    .urgency-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .urgency-badge.urgent {
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(120, 53, 15, 0.8);
+    }
+
+    .urgency-badge.critical {
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.4);
+      background: rgba(127, 29, 29, 0.8);
+    }
+
+    .urgency-badge.safe {
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(6, 78, 59, 0.8);
+    }
+
+    .price-zero-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .food-card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .provider-subtext {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .provider-title {
+      font-weight: 600;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .food-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+
+    .tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .tag-pill {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .tag-veg {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .tag-nonveg {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fb7185;
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+
+    .meta-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-item .m-lbl {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .meta-item .m-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-footer-btns {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 10px;
+    }
+
+    .btn-detail {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: #cbd5e1;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-detail:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .btn-claim {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-claim:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45);
+    }
+
+    /* Map Interactive Canvas Container */
+    .map-container {
+      background: #0f172a;
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      height: 580px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .map-mock-bg {
+      flex: 1;
+      position: relative;
+      background: radial-gradient(#1e293b 1px, transparent 1px) 0 0 / 24px 24px, #0b1322;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-marker {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 20;
+    }
+
+    .map-marker:hover {
+      transform: translate(-50%, -50%) scale(1.15);
+      z-index: 30;
+    }
+
+    .pin-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.9);
+      border: 3px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+      position: relative;
+    }
+
+    .pin-pulse {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--emerald-primary);
+      opacity: 0.6;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    .pin-tooltip {
+      position: absolute;
+      bottom: 52px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-highlight);
+      border-radius: 10px;
+      padding: 6px 12px;
+      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+    }
+
+    /* Map Controls Overlay */
+    .map-overlay-card {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 16px;
+      max-width: 320px;
+      z-index: 25;
+    }
+
+    .map-overlay-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .map-overlay-card p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Safety & Chain of Custody */
+    .audit-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .audit-timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: linear-gradient(to bottom, #10b981, #0ea5e9, #64748b);
+    }
+
+    .timeline-node {
+      position: relative;
+    }
+
+    .timeline-node::before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--emerald-primary);
+      box-shadow: 0 0 10px var(--emerald-primary);
+    }
+
+    .timeline-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 16px;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #111923;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    /* Checklist */
+    .pledge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .pledge-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .pledge-item input[type="checkbox"] {
+      margin-top: 4px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--emerald-primary);
+      cursor: pointer;
+    }
+
+    .pledge-item label {
+      font-size: 13.5px;
+      color: #cbd5e1;
+      cursor: pointer;
+    }
+
+    /* Impact Telemetry Grid */
+    .impact-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .impact-metric-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .impact-metric-box::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #10b981, #06b6d4);
+    }
+
+    .metric-value-huge {
+      font-family: 'Outfit', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      color: #fff;
+      margin: 8px 0 4px;
+    }
+
+    /* QR Code Display Card */
+    .qr-container {
+      background: #fff;
+      padding: 16px;
+      border-radius: 16px;
+      width: 180px;
+      height: 180px;
+      margin: 16px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Notification toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #0f172a;
+      border: 1px solid var(--emerald-primary);
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 200;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      animation: slideInRight 0.3s ease;
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--emerald-primary);
+    }
+
+    /* ========================================
+       🚨 RESCUE RADAR STYLES
+       ======================================== */
+    .rescue-radar-section {
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .rescue-radar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .rescue-radar-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .rescue-radar-title h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: #fff;
+    }
+
+    .radar-pulse-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #f43f5e;
+      box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.6);
+      animation: radarPulse 1.6s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes radarPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.6); }
+      70%  { box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+    }
+
+    .radar-live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      border-radius: 100px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #fb7185;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .rescue-radar-scroll {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scroll-snap-type: x mandatory;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .rescue-radar-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .radar-card {
+      flex: 0 0 300px;
+      scroll-snap-align: start;
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s;
+      border: 1.5px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .radar-card:hover {
+      transform: translateY(-4px);
+    }
+
+    /* urgency tiers */
+    .radar-card.tier-urgent {
+      border-color: rgba(244, 63, 94, 0.5);
+      box-shadow: 0 0 0 1px rgba(244,63,94,0.15), 0 8px 28px rgba(244,63,94,0.18);
+    }
+
+    .radar-card.tier-attention {
+      border-color: rgba(245, 158, 11, 0.45);
+      box-shadow: 0 0 0 1px rgba(245,158,11,0.12), 0 8px 24px rgba(245,158,11,0.14);
+    }
+
+    .radar-card.tier-available {
+      border-color: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+    }
+
+    .radar-card.tier-expired {
+      border-color: rgba(100, 116, 139, 0.3);
+      opacity: 0.55;
+      filter: grayscale(0.7);
+    }
+
+    .radar-card-img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .radar-urgency-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      backdrop-filter: blur(8px);
+    }
+
+    .radar-urgency-badge.urgent {
+      background: rgba(127, 29, 29, 0.88);
+      color: #fca5a5;
+      border: 1px solid rgba(244, 63, 94, 0.5);
+    }
+
+    .radar-urgency-badge.attention {
+      background: rgba(120, 53, 15, 0.88);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.5);
+    }
+
+    .radar-urgency-badge.available {
+      background: rgba(6, 78, 59, 0.88);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.5);
+    }
+
+    .radar-urgency-badge.expired {
+      background: rgba(30, 41, 59, 0.88);
+      color: #94a3b8;
+      border: 1px solid rgba(100, 116, 139, 0.4);
+    }
+
+    .radar-zero-price {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 100px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.45);
+    }
+
+    .radar-card-body {
+      padding: 14px 16px 16px;
+    }
+
+    .radar-food-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 6px;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .radar-meta-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .radar-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .radar-meta-item strong {
+      color: #cbd5e1;
+    }
+
+    .radar-countdown-bar {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 100px;
+      height: 4px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .radar-countdown-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1s linear;
+    }
+
+    .radar-countdown-fill.urgent   { background: linear-gradient(90deg, #f43f5e, #fb7185); }
+    .radar-countdown-fill.attention { background: linear-gradient(90deg, #f59e0b, #fcd34d); }
+    .radar-countdown-fill.available { background: linear-gradient(90deg, #10b981, #34d399); }
+    .radar-countdown-fill.expired  { background: #475569; }
+
+    .radar-timer-text {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .radar-timer-text.urgent   { color: #fb7185; }
+    .radar-timer-text.attention { color: #fcd34d; }
+    .radar-timer-text.available { color: #34d399; }
+    .radar-timer-text.expired  { color: #64748b; }
+
+    .radar-claim-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+
+    .radar-claim-btn.active-claim {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+
+    .radar-claim-btn.active-claim:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+    }
+
+    .radar-claim-btn.expired-claim {
+      background: rgba(100, 116, 139, 0.15);
+      color: #64748b;
+      border: 1px solid rgba(100, 116, 139, 0.25);
+      cursor: not-allowed;
+    }
+
+    .radar-empty-state {
+      text-align: center;
+      padding: 36px 24px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo-badge">
+        <div class="logo-icon">🍱</div>
+        <div class="logo-text">
+          <h1>FoodLoop</h1>
+          <p>Surplus Redistribution • ₹0 Guarantee</p>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <button class="nav-link active" onclick="switchTab('home')">🏠 Home Feed</button>
+        <button class="nav-link" onclick="switchTab('map')">🗺️ Radar Map</button>
+        <button class="nav-link" onclick="switchTab('volunteers')">🤝 Community Logistics</button>
+        <button class="nav-link" onclick="switchTab('ai')">🤖 Smart Match & AI</button>
+        <button class="nav-link" onclick="switchTab('safety')">🔐 Trust & Safety</button>
+        <button class="nav-link" onclick="switchTab('impact')">♻️ Impact Telemetry</button>
+        <button class="nav-link" onclick="switchTab('claims')">📋 My Claims</button>
+      </nav>
+
+      <div class="user-persona-selector">
+        <div class="persona-badge">
+          <span>👤 Persona:</span>
+          <select id="personaSelect" class="persona-select" onchange="handlePersonaChange(this.value)">
+            <option value="receiver">Student / Receiver</option>
+            <option value="provider">Green Leaf Café (Provider)</option>
+            <option value="delivery">NCC Cadet Officer (Volunteer)</option>
+            <option value="ngo">Hope Shelter (NGO Partner)</option>
+            <option value="admin">Central Safety Admin</option>
+          </select>
+        </div>
+        <button class="btn-primary" style="padding: 8px 16px; font-size: 13px;" onclick="openAddListingModal()">
+          + List Surplus Food
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero-banner">
+    <div class="hero-card">
+      <div class="hero-content">
+        <h2>Rescue Food. Feed People. <span>Zero Waste.</span></h2>
+        <p>
+          Every evening, edible surplus food from cafeterias, bakeries, and events is redistributed to students, community members, and shelters at <strong>₹0.00</strong>. Verified safe with chain-of-custody tracking.
+        </p>
+        <div class="stats-strip">
+          <div class="stat-pill">
+            <span class="value" id="heroMealsCount">12,480+</span>
+            <span class="label">Meals Rescued</span>
+          </div>
+          <div class="stat-pill">
+            <span class="value" id="heroKgCount">4,742 kg</span>
+            <span class="label">Food Waste Diverted</span>
+          </div>
+          <div class="stat-pill">
+            <span class="value" id="heroCo2Count">11.8 t</span>
+            <span class="label">CO₂e Avoided</span>
+          </div>
+          <div class="stat-pill">
+            <span class="value" style="color: #10b981;">₹0.00</span>
+            <span class="label">Food Cost Forever</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="openAddListingModal()">
+          <span>📤</span> List Surplus Food (₹0)
+        </button>
+        <button class="btn-secondary" onclick="switchTab('safety')">
+          <span>🛡️</span> View 5-Point Safety Charter
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main>
+    <!-- TAB 1: HOME FEED -->
+    <section id="tab-home" class="tab-section active">
+
+      <!-- 🚨 RESCUE RADAR SECTION -->
+      <div class="rescue-radar-section" id="rescueRadarSection">
+        <div class="rescue-radar-header">
+          <div class="rescue-radar-title">
+            <div class="radar-pulse-dot"></div>
+            <h3>🚨 Rescue Radar</h3>
+            <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">— Food expiring soonest, updated live</span>
+          </div>
+          <div class="radar-live-badge">
+            <span style="width:7px;height:7px;border-radius:50%;background:#f43f5e;display:inline-block;"></span>
+            LIVE
+          </div>
+        </div>
+        <div class="rescue-radar-scroll" id="rescueRadarScroll">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+      <!-- END RESCUE RADAR -->
+      <div class="controls-bar">
+        <div class="category-pills">
+          <button class="filter-chip active" onclick="filterCategory('all', this)">All Categories</button>
+          <button class="filter-chip" onclick="filterCategory('Cooked Meals', this)">🍛 Cooked Meals</button>
+          <button class="filter-chip" onclick="filterCategory('Bakery', this)">🥐 Bakery & Bread</button>
+          <button class="filter-chip" onclick="filterCategory('Fresh Produce', this)">🥗 Fresh Produce</button>
+          <button class="filter-chip" onclick="filterDiet('veg', this)">🌱 Pure Veg Only</button>
+          <button class="filter-chip" onclick="filterDiet('urgent', this)">⚡ Urgent Rescue (<1h)</button>
+        </div>
+        <div class="search-input-box">
+          <span>🔍</span>
+          <input type="text" id="searchInput" placeholder="Search dish, café, or ingredients..." onkeyup="handleSearch(this.value)">
+        </div>
+      </div>
+
+      <div class="food-grid" id="foodGrid">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+    </section>
+
+    <!-- TAB 2: RADAR MAP -->
+    <section id="tab-map" class="tab-section">
+      <div class="map-container">
+        <div class="map-overlay-card">
+          <h3>📍 Hyperlocal Food Redistribution Map</h3>
+          <p>Real-time location of active surplus drop-offs, campus cafeterias, and volunteer collection points.</p>
+          <div style="font-size: 11.5px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
+            <div>🟢 <strong>Green Pins:</strong> Available Surplus Food (<2km)</div>
+            <div>🔵 <strong>Blue Pins:</strong> Student Volunteer / NCC Station</div>
+            <div>🟣 <strong>Purple Pins:</strong> Verified NGO Shelter Distribution</div>
+          </div>
+        </div>
+
+        <div class="map-mock-bg" id="mapMockArea">
+          <!-- Pin 1 -->
+          <div class="map-marker" style="top: 38%; left: 32%;" onclick="openFoodDetail(1)">
+            <div class="pin-circle">🍛<div class="pin-pulse"></div></div>
+            <div class="pin-tooltip">Green Leaf Café: 18 portions veg pulao (0.4 km)</div>
+          </div>
+
+          <!-- Pin 2 -->
+          <div class="map-marker" style="top: 48%; left: 56%;" onclick="openFoodDetail(2)">
+            <div class="pin-circle" style="background: rgba(245, 158, 11, 0.9);">🍗<div class="pin-pulse" style="background: #f59e0b;"></div></div>
+            <div class="pin-tooltip">Campus Dining: 28 portions Biryani [Urgent] (0.8 km)</div>
+          </div>
+
+          <!-- Pin 3 -->
+          <div class="map-marker" style="top: 68%; left: 42%;" onclick="openFoodDetail(3)">
+            <div class="pin-circle">🥐<div class="pin-pulse"></div></div>
+            <div class="pin-tooltip">Sunrise Bakery: 14 Artisanal Loaves (1.2 km)</div>
+          </div>
+
+          <!-- Pin 4 -->
+          <div class="map-marker" style="top: 30%; left: 68%;" onclick="openFoodDetail(4)">
+            <div class="pin-circle">🥘<div class="pin-pulse"></div></div>
+            <div class="pin-tooltip">Royal Palms Grand: 45 portions buffet (1.9 km)</div>
+          </div>
+
+          <!-- Pin 5 (Volunteer Hub) -->
+          <div class="map-marker" style="top: 55%; left: 24%;">
+            <div class="pin-circle" style="background: #0284c7;">🚴</div>
+            <div class="pin-tooltip">NCC Cadet Volunteer Station (Active)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: COMMUNITY LOGISTICS & VOLUNTEERS -->
+    <section id="tab-volunteers" class="tab-section">
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-family: 'Outfit'; font-size: 24px; margin-bottom: 6px;">🤝 Authorized Community Logistics Network</h2>
+        <p style="color: var(--text-muted); font-size: 14px;">
+          Empowering university NCC cadets, NSS volunteers, and verified NGOs with thermal delivery gear and chain-of-custody verification.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;">
+        <div class="food-card" style="padding: 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <span style="font-size: 24px;">🎖️</span>
+            <span class="tag-pill tag-veg">Verified Active</span>
+          </div>
+          <h3 style="font-size: 18px; margin-bottom: 6px;">NCC 3rd Battalion Cadet Wing</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Rapid campus bicycle squad equipped with insulated thermal bags for rapid hot food transfers.
+          </p>
+          <div class="meta-metrics">
+            <div class="meta-item"><span class="m-lbl">Capacity</span><span class="m-val">25 Portions</span></div>
+            <div class="meta-item"><span class="m-lbl">Deliveries</span><span class="m-val">42 Completed</span></div>
+            <div class="meta-item"><span class="m-lbl">Thermal Bag Temp</span><span class="m-val" style="color: #10b981;">64.2°C (HACCP Safe)</span></div>
+            <div class="meta-item"><span class="m-lbl">Avg Transit Time</span><span class="m-val">12 mins</span></div>
+          </div>
+          <button class="btn-primary" style="width: 100%;" onclick="showToast('Dispatched Volunteer Alert to NCC Cadets!')">
+            📡 Dispatch Task to Cadet Lead
+          </button>
+        </div>
+
+        <div class="food-card" style="padding: 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <span style="font-size: 24px;">🚐</span>
+            <span class="tag-pill tag-veg">Verified Active</span>
+          </div>
+          <h3 style="font-size: 18px; margin-bottom: 6px;">City Food Relief Community Van</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Bulk capacity electric vehicle servicing banquet halls, wedding surplus, and youth orphanages.
+          </p>
+          <div class="meta-metrics">
+            <div class="meta-item"><span class="m-lbl">Capacity</span><span class="m-val">40 Portions</span></div>
+            <div class="meta-item"><span class="m-lbl">Deliveries</span><span class="m-val">115 Completed</span></div>
+            <div class="meta-item"><span class="m-lbl">Coordinator</span><span class="m-val">Deepa M. (Logistics)</span></div>
+            <div class="meta-item"><span class="m-lbl">License Status</span><span class="m-val">FSSAI Certified</span></div>
+          </div>
+          <button class="btn-primary" style="width: 100%;" onclick="showToast('Assigned Van route to City Food Relief!')">
+            📋 Route Bulk Pickup Request
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SMART MATCH & AI ENGINE -->
+    <section id="tab-ai" class="tab-section">
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-family: 'Outfit'; font-size: 24px; margin-bottom: 6px;">🤖 AI Demand Prediction & Logistics Matcher</h2>
+        <p style="color: var(--text-muted); font-size: 14px;">
+          Predicting surplus before waste occurs, prioritizing high perishability items, and matching ideal volunteers.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="food-card" style="padding: 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <h3 style="font-size: 18px;">📈 AI Surplus Forecast Engine</h3>
+            <span class="tag-pill" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">91% Confidence</span>
+          </div>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Trained on dining footfall patterns, weekday trends, and weather conditions.
+          </p>
+          <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-size: 13px; color: #94a3b8;">Predicted Surplus Window:</span>
+              <strong style="color: #10b981;">20:30 - 22:00 Tonight</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-size: 13px; color: #94a3b8;">Estimated Surplus Range:</span>
+              <strong style="color: #fff;">25 - 40 Portions</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="font-size: 13px; color: #94a3b8;">High Perishability Risk:</span>
+              <strong style="color: #f59e0b;">Cooked Rice & Lentil Stew</strong>
+            </div>
+          </div>
+          <button class="btn-secondary" style="width: 100%;" onclick="showToast('AI automated reservation alert scheduled for 20:30!')">
+            ⚡ Pre-Notify Nearby Volunteers
+          </button>
+        </div>
+
+        <div class="food-card" style="padding: 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <h3 style="font-size: 18px;">🎯 Intelligent Route Pairing</h3>
+            <span class="tag-pill tag-veg">Top AI Match: 94%</span>
+          </div>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Automated scoring factoring in bicycle transit time, thermal box availability, and remaining shelf life.
+          </p>
+          <div class="meta-metrics">
+            <div class="meta-item"><span class="m-lbl">Optimal Partner</span><span class="m-val">NCC Cadet Wing</span></div>
+            <div class="meta-item"><span class="m-lbl">Transit ETA</span><span class="m-val">8 minutes</span></div>
+            <div class="meta-item"><span class="m-lbl">HACCP Preservation</span><span class="m-val" style="color: #10b981;">99.8%</span></div>
+            <div class="meta-item"><span class="m-lbl">Beneficiary Destination</span><span class="m-val">Hostel Block C Station</span></div>
+          </div>
+          <button class="btn-primary" style="width: 100%;" onclick="showToast('AI Match confirmed! Push dispatch sent.')">
+            🚀 Confirm AI Dispatch Plan
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: TRUST & SAFETY -->
+    <section id="tab-safety" class="tab-section">
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-family: 'Outfit'; font-size: 24px; margin-bottom: 6px;">🔐 Trust, Safety & Food Hygiene Governance</h2>
+        <p style="color: var(--text-muted); font-size: 14px;">
+          FoodLoop strictly enforces FSSAI food safety regulations, 5-point hygiene declarations, and automated 1-click incident pauses.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px;">
+        <div class="food-card" style="padding: 24px;">
+          <h3 style="font-size: 18px; margin-bottom: 14px;">🛡️ Mandatory 5-Point Safety Pledge</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Every provider must digitally sign all 5 safety declarations before a listing can be published:
+          </p>
+          <div class="pledge-list">
+            <div class="pledge-item">
+              <span style="color: #10b981; font-size: 18px;">✅</span>
+              <div>
+                <strong>1. Hygienic Handling</strong>
+                <p style="font-size: 12px; color: #94a3b8;">Food handled strictly with sanitized gloves, hairnets, and clean culinary tools.</p>
+              </div>
+            </div>
+            <div class="pledge-item">
+              <span style="color: #10b981; font-size: 18px;">✅</span>
+              <div>
+                <strong>2. Proper Holding Temperature</strong>
+                <p style="font-size: 12px; color: #94a3b8;">Hot foods held above 60°C; cold foods refrigerated strictly below 4°C.</p>
+              </div>
+            </div>
+            <div class="pledge-item">
+              <span style="color: #10b981; font-size: 18px;">✅</span>
+              <div>
+                <strong>3. Unserved Edible Surplus Only</strong>
+                <p style="font-size: 12px; color: #94a3b8;">Surplus food comes from kitchen preparation pans; never previously served to customers.</p>
+              </div>
+            </div>
+            <div class="pledge-item">
+              <span style="color: #10b981; font-size: 18px;">✅</span>
+              <div>
+                <strong>4. Strict Redistribution Window</strong>
+                <p style="font-size: 12px; color: #94a3b8;">Surplus must be distributed within 2 to 4 hours of preparation.</p>
+              </div>
+            </div>
+            <div class="pledge-item">
+              <span style="color: #10b981; font-size: 18px;">✅</span>
+              <div>
+                <strong>5. Transparent Allergen Disclosure</strong>
+                <p style="font-size: 12px; color: #94a3b8;">All common allergens (Dairy, Gluten, Nuts, Soy) explicitly tagged.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card" style="padding: 24px;">
+          <h3 style="font-size: 18px; margin-bottom: 14px;">⚠️ Immediate Incident Reporting</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Any receiver or volunteer who notices a packaging or odor concern can trigger an instant automatic listing pause:
+          </p>
+
+          <div class="form-group">
+            <label>Select Listing to Report:</label>
+            <select id="reportListingId" class="form-control">
+              <option value="1">#1 - Surplus Vegetable Pulao (Green Leaf Café)</option>
+              <option value="2">#2 - Fresh Chicken Biryani (Campus Dining)</option>
+              <option value="3">#3 - Artisan Sourdough Loaves (Sunrise Bakery)</option>
+              <option value="4">#4 - Paneer Butter Masala (Royal Palms Grand)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Concern Category:</label>
+            <select id="reportIssueType" class="form-control">
+              <option value="TEMPERATURE_DEVIATION">Temperature below 60°C</option>
+              <option value="PACKAGING_DAMAGED">Damaged Seal / Packaging</option>
+              <option value="ODOR_CONCERN">Abnormal Odor / Freshness Concern</option>
+              <option value="ALLERGEN_MISMATCH">Unlisted Allergen Present</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Description Details:</label>
+            <textarea id="reportDetails" class="form-control" rows="3" placeholder="Provide observation details..."></textarea>
+          </div>
+
+          <button class="btn-primary" style="background: linear-gradient(135deg, #e11d48, #be123c); width: 100%; box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);" onclick="submitSafetyReport()">
+            🚨 Submit Safety Incident & Auto-Pause Item
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: IMPACT TELEMETRY -->
+    <section id="tab-impact" class="tab-section">
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-family: 'Outfit'; font-size: 24px; margin-bottom: 6px;">♻️ Environmental & Social Impact Telemetry</h2>
+        <p style="color: var(--text-muted); font-size: 14px;">
+          Audited open metrics measuring meals rescued, methane emissions prevented, and ESG municipal contributions.
+        </p>
+      </div>
+
+      <div class="impact-stat-grid">
+        <div class="impact-metric-box">
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Total Meals Rescued</span>
+          <div class="metric-value-huge" id="impactMeals">12,480</div>
+          <span style="font-size: 12.5px; color: #34d399;">+142 this week</span>
+        </div>
+
+        <div class="impact-metric-box">
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Food Diverted From Landfill</span>
+          <div class="metric-value-huge" id="impactKg">4,742 kg</div>
+          <span style="font-size: 12.5px; color: #38bdf8;">~380g average meal weight</span>
+        </div>
+
+        <div class="impact-metric-box">
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">GHG Carbon Avoided</span>
+          <div class="metric-value-huge" id="impactCo2">11,855 kg</div>
+          <span style="font-size: 12.5px; color: #fbbf24;">2.5 kg CO₂e per kg food saved</span>
+        </div>
+
+        <div class="impact-metric-box">
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">People Served (₹0)</span>
+          <div class="metric-value-huge" id="impactPeople">11,856</div>
+          <span style="font-size: 12.5px; color: #a78bfa;">Students & Shelter Residents</span>
+        </div>
+      </div>
+
+      <div class="food-card" style="padding: 28px;">
+        <h3 style="font-size: 18px; margin-bottom: 8px;">💰 The FoodLoop Sustainability & Funding Model</h3>
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">
+          How can FoodLoop be 100% free for donors and recipients forever?
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 18px;">
+            <strong style="color: #10b981; font-size: 15px;">₹0.00 Platform Fee</strong>
+            <p style="font-size: 13px; color: #94a3b8; margin-top: 6px;">
+              Food is never sold or monetized. No transaction fees, delivery markups, or subscription gates for recipients.
+            </p>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 18px;">
+            <strong style="color: #38bdf8; font-size: 15px;">Corporate CSR Grants</strong>
+            <p style="font-size: 13px; color: #94a3b8; margin-top: 6px;">
+              Funded through corporate social responsibility grants dedicated to hunger alleviation and UN SDG 12.3 targets.
+            </p>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 18px;">
+            <strong style="color: #a78bfa; font-size: 15px;">Enterprise ESG Telemetry</strong>
+            <p style="font-size: 13px; color: #94a3b8; margin-top: 6px;">
+              Commercial hotels and campuses receive verified audited greenhouse gas diversion reports for annual ESG tax filings.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: MY CLAIMS -->
+    <section id="tab-claims" class="tab-section">
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-family: 'Outfit'; font-size: 24px; margin-bottom: 6px;">📋 My Active Food Reservations & Pass</h2>
+        <p style="color: var(--text-muted); font-size: 14px;">
+          Present your secure claim QR code to the provider or volunteer handover partner upon pickup.
+        </p>
+      </div>
+
+      <div id="claimsList" style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- Dynamically rendered -->
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: FOOD DETAILS & CHAIN OF CUSTODY -->
+  <div class="modal-backdrop" id="foodDetailModal">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeModal('foodDetailModal')">✕</button>
+      <div id="modalDetailContent">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CLAIM CONFIRMATION -->
+  <div class="modal-backdrop" id="claimModal">
+    <div class="modal-box" style="text-align: center;">
+      <button class="modal-close-btn" onclick="closeModal('claimModal')">✕</button>
+      <div style="font-size: 40px; margin-bottom: 8px;">🎉</div>
+      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 6px;" id="claimModalTitle">Surplus Food Claimed!</h3>
+      <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 16px;">
+        Your claim is confirmed at <strong>₹0.00</strong>. Show this pickup QR pass at the collection counter.
+      </p>
+
+      <div class="qr-container">
+        <!-- Visual Mock QR code -->
+        <svg width="150" height="150" viewBox="0 0 100 100">
+          <rect width="100" height="100" fill="#ffffff" />
+          <path d="M10,10 h25 v25 h-25 z M15,15 h15 v15 h-15 z M65,10 h25 v25 h-25 z M70,15 h15 v15 h-15 z M10,65 h25 v25 h-25 z M15,70 h15 v15 h-15 z M45,15 h10 v10 h-10 z M45,35 h10 v10 h-10 z M45,55 h10 v10 h-10 z M65,45 h25 v10 h-25 z M15,45 h20 v10 h-20 z M45,75 h30 v15 h-30 z M75,65 h15 v10 h-15 z" fill="#0f172a" />
+        </svg>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 12px; margin-bottom: 20px;">
+        <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Claim Pass Code</span>
+        <div style="font-size: 20px; font-weight: 800; color: #10b981; letter-spacing: 1px;" id="claimCodeDisplay">LOOP-8492-X</div>
+        <div style="font-size: 12px; color: #cbd5e1; margin-top: 4px;" id="claimPickupWindow">Pickup before: 18:30</div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-primary" style="flex: 1;" onclick="closeModal('claimModal'); switchTab('claims');">
+          View in My Claims
+        </button>
+        <button class="btn-secondary" style="flex: 1;" onclick="closeModal('claimModal')">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD SURPLUS FOOD (PROVIDER) -->
+  <div class="modal-backdrop" id="addListingModal">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeModal('addListingModal')">✕</button>
+      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 6px;">📤 List Surplus Food for ₹0</h3>
+      <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 18px;">
+        All surplus food must adhere to the 5 safety standards. Never list food that was exposed on open plates.
+      </p>
+
+      <form onsubmit="handleCreateListing(event)">
+        <div class="form-group">
+          <label>Food Item Title *</label>
+          <input type="text" id="newTitle" class="form-control" placeholder="e.g. Fresh Vegetable Pulav & Dal Tadka" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Category *</label>
+            <select id="newCategory" class="form-control">
+              <option value="Cooked Meals">Cooked Meals</option>
+              <option value="Bakery">Bakery & Pastries</option>
+              <option value="Fresh Produce">Fresh Produce & Fruits</option>
+              <option value="Dairy">Dairy Items</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Portions Available *</label>
+            <input type="number" id="newPortions" class="form-control" min="1" value="15" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Preparation Time *</label>
+            <input type="text" id="newPrepTime" class="form-control" placeholder="e.g. Today at 15:00" required>
+          </div>
+          <div class="form-group">
+            <label>Pickup Deadline (Urgency) *</label>
+            <input type="text" id="newPickupEnd" class="form-control" placeholder="e.g. 18:30" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Storage Method & Temperature *</label>
+          <input type="text" id="newStorage" class="form-control" placeholder="e.g. Hot Insulated Box (>60°C)" required>
+        </div>
+
+        <div class="form-group">
+          <label>Dietary Type</label>
+          <div style="display: flex; gap: 20px; align-items: center; margin-top: 6px;">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="radio" name="newIsVeg" value="1" checked> 🌱 Vegetarian
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="radio" name="newIsVeg" value="0"> 🍗 Non-Vegetarian
+            </label>
+          </div>
+        </div>
+
+        <!-- Mandatory 5 Pledges -->
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
+          <strong style="color: #10b981; font-size: 13.5px; display: block; margin-bottom: 8px;">
+            🛡️ Mandatory Food Safety Declarations (All 5 Required)
+          </strong>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12.5px;">
+            <label style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="pledge1" required checked> Food prepared and stored in hygienic, sanitized kitchen
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="pledge2" required checked> Maintained at safe holding temperature (>60°C hot / <4°C cold)
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="pledge3" required checked> Unserved food from cooking pans (never customer leftovers)
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="pledge4" required checked> Within standard 2–4 hr safe redistribution consumption window
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="pledge5" required checked> All allergens and ingredients accurately listed
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%;">
+          ✨ Verify & Publish ₹0 Listing Immediately
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastBox">
+    <span id="toastIcon">✅</span>
+    <span id="toastMsg">Action completed successfully!</span>
+  </div>
+
+  <script>
+    // State
+    let currentTab = 'home';
+    let currentCategory = 'all';
+    let currentDietFilter = 'all';
+    let activeUserPersona = 'receiver';
+
+    // Mock initial data matching backend seed
+    let listings = [
+      {
+        id: 1,
+        title: "Surplus Vegetable Pulao & Slow-Cooked Dal Tadka",
+        category: "Cooked Meals",
+        provider_name: "Green Leaf Café & Bistro",
+        provider_address: "14 College Road, North Campus",
+        portions_remaining: 18,
+        portions_total: 18,
+        prep_time: "Today at 14:30",
+        pickup_end: "18:00 (In 1h 45m)",
+        is_veg: 1,
+        allergens: ["Gluten", "Dairy"],
+        ingredients: "Basmati rice, carrots, green peas, ghee, yellow lentils, turmeric, cumin, ginger.",
+        storage_method: "Hot Insulated Box (>60°C)",
+        storage_temp: "63°C",
+        safety_score: "VERIFIED",
+        urgency: "MODERATE",
+        distance_km: "0.4 km",
+        photo_url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 2,
+        title: "Fresh Chicken Biryani + Cucumber Mint Raita",
+        category: "Cooked Meals",
+        provider_name: "Campus Central Dining Kitchen",
+        provider_address: "Hostel Block C, University Campus",
+        portions_remaining: 28,
+        portions_total: 32,
+        prep_time: "Today at 15:00",
+        pickup_end: "17:15 (In 35 mins)",
+        is_veg: 0,
+        allergens: ["Dairy", "Spices"],
+        ingredients: "Chicken, basmati rice, saffron, onions, curd, whole spices, mint, coriander.",
+        storage_method: "Hot Insulated Box (>60°C)",
+        storage_temp: "65°C",
+        safety_score: "REQUIRES_ATTENTION",
+        urgency: "CRITICAL",
+        distance_km: "0.8 km",
+        photo_url: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 3,
+        title: "Artisan Sourdough Loaves & Croissant Assortment",
+        category: "Bakery",
+        provider_name: "Sunrise Artisanal Organic Bakery",
+        provider_address: "88 Heritage Boulevard",
+        portions_remaining: 14,
+        portions_total: 14,
+        prep_time: "Baked this afternoon",
+        pickup_end: "20:00 (In 4h)",
+        is_veg: 1,
+        allergens: ["Gluten", "Dairy", "Eggs"],
+        ingredients: "Organic whole wheat flour, natural sourdough levain, butter, sea salt, yeast.",
+        storage_method: "Bakery Display (Room Temp)",
+        storage_temp: "22°C (Dry)",
+        safety_score: "VERIFIED",
+        urgency: "SAFE",
+        distance_km: "1.2 km",
+        photo_url: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 4,
+        title: "Paneer Butter Masala, Roti & Steamed Rice Batch",
+        category: "Cooked Meals",
+        provider_name: "Royal Palms Grand Hotel Buffet",
+        provider_address: "5 Star Plaza, Residency Road",
+        portions_remaining: 45,
+        portions_total: 45,
+        prep_time: "Freshly packed at 15:30",
+        pickup_end: "19:00 (In 2h 45m)",
+        is_veg: 1,
+        allergens: ["Dairy", "Gluten"],
+        ingredients: "Fresh cottage cheese, tomatoes, cashews, cream, whole wheat flatbreads.",
+        storage_method: "Hot Insulated Container (>60°C)",
+        storage_temp: "64°C",
+        safety_score: "VERIFIED",
+        urgency: "SAFE",
+        distance_km: "1.9 km",
+        photo_url: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80"
+      }
+    ];
+
+    let userClaims = [
+      {
+        id: 101,
+        claim_code: "LOOP-7729-A",
+        food_title: "Surplus Vegetable Pulao & Slow-Cooked Dal Tadka",
+        portions: 2,
+        provider: "Green Leaf Café & Bistro",
+        pickup_deadline: "Today by 18:00",
+        status: "RESERVED",
+        pickup_address: "14 College Road, North Campus"
+      }
+    ];
+
+    // Initialize App
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchBackendData();
+      renderFoodGrid();
+      renderClaims();
+      // 🚨 Rescue Radar
+      assignDeadlines();
+      renderRescueRadar();
+      startRescueRadarLiveTick();
+    });
+
+    // Try fetching live backend data if server is running
+    async function fetchBackendData() {
+      try {
+        const res = await fetch('http://localhost:8000/api/listings');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.listings && data.listings.length > 0) {
+            listings = data.listings;
+            renderFoodGrid();
+            // Re-init Rescue Radar with fresh backend data
+            assignDeadlines();
+            renderRescueRadar();
+          }
+        }
+      } catch (e) {
+        // Standalone mode is fine
+        console.log("Using standalone preview data engine.");
+      }
+    }
+
+    // Switch Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(`tab-${tabId}`);
+      if (target) {
+        target.classList.add('active');
+      }
+
+      // Highlight corresponding nav link
+      const links = document.querySelectorAll('.nav-link');
+      links.forEach(l => {
+        if (l.getAttribute('onclick')?.includes(tabId)) {
+          l.classList.add('active');
+        }
+      });
+      currentTab = tabId;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Render Food Cards
+    function renderFoodGrid() {
+      const container = document.getElementById('foodGrid');
+      container.innerHTML = '';
+
+      let filtered = listings.filter(item => {
+        if (currentCategory !== 'all' && item.category !== currentCategory) return false;
+        if (currentDietFilter === 'veg' && item.is_veg !== 1) return false;
+        if (currentDietFilter === 'urgent' && item.urgency !== 'CRITICAL') return false;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border-radius: 20px;">
+            <div style="font-size: 40px; margin-bottom: 12px;">🌱</div>
+            <h3>No Surplus Food Listings in this filter</h3>
+            <p style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">Try selecting "All Categories" or list a new batch.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'food-card';
+
+        let urgencyClass = 'safe';
+        let urgencyText = 'Safe Window';
+        if (item.urgency === 'CRITICAL') {
+          urgencyClass = 'critical';
+          urgencyText = '⚡ Urgent Rescue (<1h)';
+        } else if (item.urgency === 'MODERATE') {
+          urgencyClass = 'urgent';
+          urgencyText = '⏳ Expiring Soon (<2h)';
+        }
+
+        const vegTag = item.is_veg === 1 ?
+          `<span class="tag-pill tag-veg">🌱 Veg</span>` :
+          `<span class="tag-pill tag-nonveg">🍗 Non-Veg</span>`;
+
+        const allergenPills = (item.allergens || []).map(a => `<span class="tag-pill">${a}</span>`).join(' ');
+
+        card.innerHTML = `
+          <div class="food-card-img-wrap">
+            <img src="${item.photo_url}" alt="${item.title}" loading="lazy">
+            <div class="urgency-badge ${urgencyClass}">
+              ${urgencyText}
+            </div>
+            <div class="price-zero-badge">₹0 • Free</div>
+          </div>
+          <div class="food-card-body">
+            <div class="provider-subtext">
+              <span class="provider-title">🏪 ${item.provider_name}</span>
+              <span>📍 ${item.distance_km || '0.5 km'}</span>
+            </div>
+            <h3 class="food-title">${item.title}</h3>
+            <div class="tags-row">
+              ${vegTag}
+              <span class="tag-pill">${item.category}</span>
+              ${allergenPills}
+            </div>
+            <div class="meta-metrics">
+              <div class="meta-item">
+                <span class="m-lbl">Available</span>
+                <span class="m-val">${item.portions_remaining} Portions</span>
+              </div>
+              <div class="meta-item">
+                <span class="m-lbl">Pickup Until</span>
+                <span class="m-val">${item.pickup_end}</span>
+              </div>
+              <div class="meta-item">
+                <span class="m-lbl">Storage Method</span>
+                <span class="m-val">${item.storage_method}</span>
+              </div>
+              <div class="meta-item">
+                <span class="m-lbl">Safety Status</span>
+                <span class="m-val" style="color: #10b981;">🛡️ ${item.safety_score}</span>
+              </div>
+            </div>
+            <div class="card-footer-btns">
+              <button class="btn-detail" onclick="openFoodDetail(${item.id})">Details</button>
+              <button class="btn-claim" onclick="claimFood(${item.id})">
+                <span>⚡</span> Claim for ₹0
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Filter handlers
+    function filterCategory(cat, btn) {
+      currentCategory = cat;
+      currentDietFilter = 'all';
+      document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderFoodGrid();
+    }
+
+    function filterDiet(type, btn) {
+      currentDietFilter = type;
+      document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderFoodGrid();
+    }
+
+    function handleSearch(query) {
+      query = query.toLowerCase();
+      const filtered = listings.filter(l =>
+        l.title.toLowerCase().includes(query) ||
+        l.provider_name.toLowerCase().includes(query) ||
+        (l.ingredients && l.ingredients.toLowerCase().includes(query))
+      );
+      renderFilteredGrid(filtered);
+    }
+
+    function renderFilteredGrid(items) {
+      const container = document.getElementById('foodGrid');
+      container.innerHTML = '';
+      items.forEach(item => {
+        // Render simplified cards
+        const card = document.createElement('div');
+        card.className = 'food-card';
+        card.innerHTML = `
+          <div class="food-card-img-wrap">
+            <img src="${item.photo_url}" alt="${item.title}">
+            <div class="price-zero-badge">₹0 • Free</div>
+          </div>
+          <div class="food-card-body">
+            <h3 class="food-title">${item.title}</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">🏪 ${item.provider_name}</p>
+            <div class="card-footer-btns">
+              <button class="btn-detail" onclick="openFoodDetail(${item.id})">Details</button>
+              <button class="btn-claim" onclick="claimFood(${item.id})">Claim ₹0</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Open Food Detail Modal
+    function openFoodDetail(id) {
+      const item = listings.find(l => l.id === id);
+      if (!item) return;
+
+      const content = document.getElementById('modalDetailContent');
+      content.innerHTML = `
+        <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: flex-start;">
+          <img src="${item.photo_url}" style="width: 140px; height: 110px; object-fit: cover; border-radius: 14px;" />
+          <div>
+            <div style="font-size: 12px; color: #10b981; font-weight: 700; text-transform: uppercase;">Verified FSSAI Safe Batch</div>
+            <h2 style="font-size: 20px; font-weight: 800; color: #fff; margin: 4px 0 8px;">${item.title}</h2>
+            <div style="font-size: 13px; color: var(--text-muted);">Provided by <strong>${item.provider_name}</strong> (${item.provider_address})</div>
+          </div>
+        </div>
+
+        <div class="meta-metrics" style="margin-bottom: 20px;">
+          <div class="meta-item"><span class="m-lbl">Preparation Time</span><span class="m-val">${item.prep_time}</span></div>
+          <div class="meta-item"><span class="m-lbl">Pickup Window</span><span class="m-val">${item.pickup_end}</span></div>
+          <div class="meta-item"><span class="m-lbl">Holding Temperature</span><span class="m-val" style="color: #10b981;">${item.storage_temp || '65°C'} (Compliant)</span></div>
+          <div class="meta-item"><span class="m-lbl">Portions Remaining</span><span class="m-val">${item.portions_remaining} / ${item.portions_total}</span></div>
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <strong style="font-size: 13px; color: #cbd5e1;">Ingredients:</strong>
+          <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">${item.ingredients || 'Natural fresh ingredients listed at kitchen.'}</p>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <strong style="font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 10px;">📦 Digital Chain of Custody (Immutable Audit Trail)</strong>
+          <div class="audit-timeline">
+            <div class="timeline-node">
+              <div class="timeline-card">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700;">
+                  <span>PREPARED & INSPECTED</span>
+                  <span style="color: #10b981;">14:30</span>
+                </div>
+                <p style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Kitchen inspection passed. Temperature recorded at 65°C.</p>
+              </div>
+            </div>
+            <div class="timeline-node">
+              <div class="timeline-card">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700;">
+                  <span>5-POINT SAFETY CHARTER SIGNED</span>
+                  <span style="color: #10b981;">15:00</span>
+                </div>
+                <p style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Digital seal hash generated. Published for ₹0 redistribution.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-primary" style="flex: 2;" onclick="closeModal('foodDetailModal'); claimFood(${item.id});">
+            ⚡ Claim Portion Now (₹0)
+          </button>
+          <button class="btn-secondary" style="flex: 1;" onclick="closeModal('foodDetailModal')">
+            Close
+          </button>
+        </div>
+      `;
+
+      document.getElementById('foodDetailModal').classList.add('open');
+    }
+
+    // Claim Food Flow
+    function claimFood(id) {
+      const item = listings.find(l => l.id === id);
+      if (!item) return;
+
+      if (item.portions_remaining <= 0) {
+        showToast("Sorry, all portions have been claimed!");
+        return;
+      }
+
+      item.portions_remaining -= 1;
+      const code = `LOOP-${Math.floor(1000 + Math.random() * 9000)}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`;
+
+      // Add to user claims
+      userClaims.unshift({
+        id: Date.now(),
+        claim_code: code,
+        food_title: item.title,
+        portions: 1,
+        provider: item.provider_name,
+        pickup_deadline: item.pickup_end,
+        status: "RESERVED",
+        pickup_address: item.provider_address
+      });
+
+      document.getElementById('claimModalTitle').innerText = `${item.title}`;
+      document.getElementById('claimCodeDisplay').innerText = code;
+      document.getElementById('claimPickupWindow').innerText = `Pickup before: ${item.pickup_end}`;
+
+      renderFoodGrid();
+      renderClaims();
+      document.getElementById('claimModal').classList.add('open');
+    }
+
+    // Render User Claims
+    function renderClaims() {
+      const container = document.getElementById('claimsList');
+      container.innerHTML = '';
+
+      if (userClaims.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-muted);">No active food claims.</p>`;
+        return;
+      }
+
+      userClaims.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'food-card';
+        item.style.padding = '20px';
+        item.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <span class="tag-pill tag-veg" style="margin-bottom: 8px; display: inline-block;">${c.status}</span>
+              <h3 style="font-size: 18px; margin-bottom: 4px;">${c.food_title}</h3>
+              <p style="font-size: 13px; color: var(--text-muted);">Pickup from: <strong>${c.provider}</strong> (${c.pickup_address})</p>
+              <p style="font-size: 13px; color: #fbbf24; margin-top: 4px;">⏰ Pickup Deadline: ${c.pickup_deadline}</p>
+            </div>
+            <div style="text-align: right; background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 12px;">
+              <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Pass Code</span>
+              <div style="font-size: 18px; font-weight: 800; color: #10b981;">${c.claim_code}</div>
+              <span style="font-size: 12px; color: #38bdf8;">₹0.00 Cost</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Modal Helpers
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function openAddListingModal() {
+      document.getElementById('addListingModal').classList.add('open');
+    }
+
+    // Create New Listing
+    function handleCreateListing(e) {
+      e.preventDefault();
+      const title = document.getElementById('newTitle').value;
+      const category = document.getElementById('newCategory').value;
+      const portions = parseInt(document.getElementById('newPortions').value);
+      const prepTime = document.getElementById('newPrepTime').value;
+      const pickupEnd = document.getElementById('newPickupEnd').value;
+      const storage = document.getElementById('newStorage').value;
+      const isVeg = parseInt(document.querySelector('input[name="newIsVeg"]:checked').value);
+
+      const newItem = {
+        id: listings.length + 1,
+        title,
+        category,
+        provider_name: "Green Leaf Café & Bistro",
+        provider_address: "14 College Road, North Campus",
+        portions_remaining: portions,
+        portions_total: portions,
+        prep_time: prepTime,
+        pickup_end: pickupEnd,
+        is_veg: isVeg,
+        allergens: ["Disclosed on kitchen seal"],
+        ingredients: "Prepared freshly according to certified hygienic standard.",
+        storage_method: storage,
+        storage_temp: "64°C",
+        safety_score: "VERIFIED",
+        urgency: "SAFE",
+        distance_km: "0.2 km",
+        photo_url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80"
+      };
+
+      listings.unshift(newItem);
+      renderFoodGrid();
+      closeModal('addListingModal');
+      showToast("✨ Surplus Food verified and published for ₹0 redistribution!");
+    }
+
+    // Safety Incident Submission
+    function submitSafetyReport() {
+      const listingId = parseInt(document.getElementById('reportListingId').value);
+      const issue = document.getElementById('reportIssueType').value;
+
+      // Auto-pause the reported listing
+      const target = listings.find(l => l.id === listingId);
+      if (target) {
+        target.safety_score = "PAUSED_FOR_INVESTIGATION";
+        target.urgency = "CRITICAL";
+      }
+
+      showToast("🚨 Safety Report Registered! Listing has been IMMEDIATELY PAUSED.");
+      renderFoodGrid();
+      switchTab('home');
+    }
+
+    // User persona switcher
+    function handlePersonaChange(val) {
+      activeUserPersona = val;
+      showToast(`Switched active persona to ${val.toUpperCase()}`);
+    }
+
+    // ================================================================
+    // 🚨 RESCUE RADAR ENGINE
+    // ================================================================
+
+    // Assign a stable deadline timestamp (epoch ms) to each listing.
+    // We parse the HH:MM from pickup_end (e.g. "17:15 (In 35 mins)").
+    // On first load, this is set once. Live countdowns run from there.
+    function assignDeadlines() {
+      const now = new Date();
+      listings.forEach(item => {
+        if (item._deadlineMs) return; // already assigned
+        // Extract HH:MM from the start of pickup_end string
+        const match = item.pickup_end ? item.pickup_end.match(/(\d{1,2}):(\d{2})/) : null;
+        if (match) {
+          const d = new Date(now);
+          d.setHours(parseInt(match[1], 10), parseInt(match[2], 10), 0, 0);
+          // If that time has already passed for today, treat as ~now (expired)
+          if (d.getTime() < now.getTime() - 60000) d.setDate(d.getDate() + 1); // edge: next day
+          item._deadlineMs = d.getTime();
+        } else {
+          // Fallback: 2h from now
+          item._deadlineMs = now.getTime() + 2 * 60 * 60 * 1000;
+        }
+      });
+    }
+
+    function getRadarTier(msLeft) {
+      if (msLeft <= 0)              return 'expired';
+      if (msLeft < 60 * 60 * 1000) return 'urgent';     // < 1 h
+      if (msLeft < 3 * 60 * 60 * 1000) return 'attention'; // 1–3 h
+      return 'available';                                // > 3 h
+    }
+
+    function getTierLabel(tier) {
+      return {
+        urgent:    '🔴 URGENT RESCUE',
+        attention: '🟡 NEEDS ATTENTION',
+        available: '🟢 AVAILABLE',
+        expired:   '⚫ EXPIRED'
+      }[tier];
+    }
+
+    function formatCountdown(msLeft) {
+      if (msLeft <= 0) return 'Deadline passed';
+      const totalSecs = Math.floor(msLeft / 1000);
+      const h = Math.floor(totalSecs / 3600);
+      const m = Math.floor((totalSecs % 3600) / 60);
+      const s = totalSecs % 60;
+      if (h > 0) return `⏱ ${h}h ${m}m ${s}s left`;
+      if (m > 0) return `⏱ ${m}m ${s}s left`;
+      return `⏱ ${s}s left`;
+    }
+
+    function getBarPercent(item) {
+      // Show how much of the total window is left (based on 4h window assumed)
+      const WINDOW_MS = 4 * 60 * 60 * 1000;
+      const msLeft = item._deadlineMs - Date.now();
+      if (msLeft <= 0) return 0;
+      return Math.min(100, (msLeft / WINDOW_MS) * 100);
+    }
+
+    function renderRescueRadar() {
+      const container = document.getElementById('rescueRadarScroll');
+      if (!container) return;
+
+      assignDeadlines();
+
+      const now = Date.now();
+      // Sort: most urgent (least time left, but not expired) first, then expired last
+      const sorted = [...listings].sort((a, b) => {
+        const aLeft = a._deadlineMs - now;
+        const bLeft = b._deadlineMs - now;
+        // Expired at the end
+        if (aLeft <= 0 && bLeft <= 0) return 0;
+        if (aLeft <= 0) return 1;
+        if (bLeft <= 0) return -1;
+        return aLeft - bLeft; // ascending (most urgent first)
+      });
+
+      container.innerHTML = '';
+
+      if (sorted.length === 0) {
+        container.innerHTML = `<div class="radar-empty-state">No active food listings in the Rescue Radar.</div>`;
+        return;
+      }
+
+      sorted.forEach(item => {
+        const msLeft = item._deadlineMs - now;
+        const tier = getRadarTier(msLeft);
+        const isExpired = tier === 'expired';
+        const barPct = getBarPercent(item);
+        const countdownText = formatCountdown(msLeft);
+        const tierLabel = getTierLabel(tier);
+
+        // Mark expired items as no longer claimable in the listing data
+        if (isExpired && item.safety_score !== 'EXPIRED') {
+          item._radarExpired = true;
+        }
+
+        const card = document.createElement('div');
+        card.className = `radar-card tier-${tier}`;
+        card.setAttribute('data-radar-id', item.id);
+
+        card.innerHTML = `
+          <div style="position:relative;">
+            <img class="radar-card-img" src="${item.photo_url}" alt="${item.title}" loading="lazy">
+            <div class="radar-urgency-badge ${tier}">${tierLabel}</div>
+            <div class="radar-zero-price">₹0</div>
+          </div>
+          <div class="radar-card-body">
+            <div class="radar-food-name">${item.title}</div>
+            <div class="radar-meta-row">
+              <div class="radar-meta-item">🍽️ <strong>${item.portions_remaining}</strong>&nbsp;portions available</div>
+              <div class="radar-meta-item">📍 <strong>${item.distance_km || '0.5 km'}</strong>&nbsp;away</div>
+              <div class="radar-meta-item">🏪 <strong>${item.provider_name}</strong></div>
+            </div>
+            <div class="radar-countdown-bar">
+              <div class="radar-countdown-fill ${tier}" style="width:${barPct}%"></div>
+            </div>
+            <div class="radar-timer-text ${tier}" id="radar-timer-${item.id}">${countdownText}</div>
+            ${isExpired || item.portions_remaining <= 0
+              ? `<button class="radar-claim-btn expired-claim" disabled>⚫ Listing Expired — Not Claimable</button>`
+              : `<button class="radar-claim-btn active-claim" onclick="claimFood(${item.id})">⚡ ₹0 — CLAIM NOW</button>`
+            }
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Live ticker: update countdowns every second, re-sort every 30s
+    let _radarRenderInterval = null;
+    let _radarSortInterval = null;
+
+    function startRescueRadarLiveTick() {
+      // Fast ticker: update only timer texts and bars every second
+      _radarRenderInterval = setInterval(() => {
+        const now = Date.now();
+        listings.forEach(item => {
+          const msLeft = item._deadlineMs ? item._deadlineMs - now : null;
+          if (msLeft === null) return;
+
+          const timerEl = document.getElementById(`radar-timer-${item.id}`);
+          const card = document.querySelector(`[data-radar-id="${item.id}"]`);
+          if (!timerEl || !card) return;
+
+          const tier = getRadarTier(msLeft);
+          timerEl.textContent = formatCountdown(msLeft);
+          timerEl.className = `radar-timer-text ${tier}`;
+
+          // Update bar width
+          const barFill = card.querySelector('.radar-countdown-fill');
+          if (barFill) {
+            barFill.style.width = getBarPercent(item) + '%';
+          }
+
+          // If just expired: disable claim button + re-render radar to resort
+          if (msLeft <= 0 && !item._radarExpired) {
+            item._radarExpired = true;
+            renderRescueRadar();
+          }
+        });
+      }, 1000);
+
+      // Slow re-sort: re-render full radar every 30s to move urgent items to front
+      _radarSortInterval = setInterval(() => {
+        renderRescueRadar();
+      }, 30000);
+    }
+
+    // Toast helper
+    function showToast(msg) {
+      const toast = document.getElementById('toastBox');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.style.display = 'flex';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
